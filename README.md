@@ -1,3 +1,3 @@
 # P8_ASM
-disassemble p8 hex files
+Disassemble P8 hex files
 disassemble.cxx is Disassembler
