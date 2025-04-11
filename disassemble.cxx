@@ -30,43 +30,43 @@
 */
 
 void ASMjz(size_t hex){
-    std::cout<<"jz "<<(hex&0xF)<<","<<((hex&0xF00)>>8)<<std::endl;
+    std::cout<<"jz r"<<(hex&0xF)<<", r"<<((hex&0xF00)>>8)<<std::endl;
 }
 
 void ASMjnz(size_t hex){
-    std::cout<<"jnz "<<(hex&0xF)<<","<<((hex&0xF00)>>8)<<std::endl;
+    std::cout<<"jnz r"<<(hex&0xF)<<", r"<<((hex&0xF00)>>8)<<std::endl;
 }
 void ASMjs(size_t hex){
-    std::cout<<"js "<<(hex&0xF)<<","<<((hex&0xF00)>>8)<<std::endl;
+    std::cout<<"js r"<<(hex&0xF)<<", r"<<((hex&0xF00)>>8)<<std::endl;
 }
 void ASMjns(size_t hex){
-    std::cout<<"jns "<<(hex&0xF)<<","<<((hex&0xF00)>>8)<<std::endl;
+    std::cout<<"jns r"<<(hex&0xF)<<", r"<<((hex&0xF00)>>8)<<std::endl;
 }
 
 void ASMld(size_t hex){
-    std::cout<<"ld "<<(hex&0xF)<<",["<<((hex&0xF00)>>8)<<"]"<<std::endl;
+    std::cout<<"ld r"<<(hex&0xF)<<", [r"<<((hex&0xF00)>>8)<<"]"<<std::endl;
 }
 void ASMst(size_t hex){
-    std::cout<<"st "<<(hex&0xF)<<",["<<((hex&0xF00)>>8)<<"]"<<std::endl;
+    std::cout<<"st r"<<(hex&0xF)<<", [r"<<((hex&0xF00)>>8)<<"]"<<std::endl;
 }
 void ASMldp(size_t hex){
-    std::cout<<"ldp "<<(hex&0xF)<<",["<<((hex&0xF00)>>8)<<"]"<<std::endl;
+    std::cout<<"ldp r"<<(hex&0xF)<<",[r"<<((hex&0xF00)>>8)<<"]"<<std::endl;
 }
 void ASMstp(size_t hex){
-    std::cout<<"stp "<<(hex&0xF)<<",["<<((hex&0xF00)>>8)<<"]"<<std::endl;
+    std::cout<<"stp r"<<(hex&0xF)<<", [r"<<((hex&0xF00)>>8)<<"]"<<std::endl;
 }
 void ASMsub(size_t hex){
-    std::cout<<"sub "<<(hex&0xF)<<","<<((hex&0xF00)>>8)<<","<<((hex&0xF0)>>4)<<std::endl;
+    std::cout<<"sub r"<<(hex&0xF)<<", r"<<((hex&0xF00)>>8)<<", r"<<((hex&0xF0)>>4)<<std::endl;
 }
 void ASMmovl(size_t hex){
-    std::cout<<"movl "<<(hex&0xF)<<","<<((hex&0xFF0)>>4)<<std::endl;
+    std::cout<<"movl r"<<(hex&0xF)<<", "<<((hex&0xFF0)>>4)<<std::endl;
 }
 void ASMmovh(size_t hex){
-    std::cout<<"movh "<<(hex&0xF)<<","<<((hex&0xFF0)>>4)<<std::endl;
+    std::cout<<"movh r"<<(hex&0xF)<<", "<<((hex&0xFF0)>>4)<<std::endl;
 }
 
 void ASMjmp(size_t hex){
-    switch (hex&0xF0>>4) {
+    switch ((hex&0xF0)>>4) {
     case 0:
         ASMjz(hex);
         break;
@@ -86,7 +86,7 @@ void ASMjmp(size_t hex){
 }
 
 void ASMmem(size_t hex){
-    switch (hex&0xF0>>4) {
+    switch ((hex&0xF0)>>4) {
     case 0:
         ASMld(hex);
         break;
@@ -140,8 +140,7 @@ size_t hexToNum(const std::string& hex_string) {
   }
 
 int main(int argc, char *argv[]) {
-    std::queue<size_t> HexQueue;
-    std::queue<std::string> ASMQueue;
+
 
     if ((argc < 2)) {
         std::cerr << "Usage: " << argv[0] << " <filename>" << std::endl;
@@ -161,18 +160,13 @@ int main(int argc, char *argv[]) {
         int lineNumber = 0;
 
         while (std::getline(stream, line)) {
-            if(lineNumber!=0)HexQueue.push(hexToNum(line));
-            else   std::cout<<line<<std::endl;
+            if ((line[0] >= '0' && line[0] <= '9') || (line[0] >= 'a' && line[0] <= 'f')) {
+                ASMcall(hexToNum(line));
+            }
             lineNumber++;
         }
 
-        while (!HexQueue.empty()) {
-            ASMcall(HexQueue.front());
-            HexQueue.pop();
-        }
+        file.close();
 
     return 0;
 }
-
-
-
